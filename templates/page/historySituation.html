@@ -26,9 +26,9 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">城市名称</label>
+                            <label class="layui-form-label">渔场名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="cityname" autocomplete="off" class="layui-input">
+                                <input type="text" name="fishery_name" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -71,7 +71,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: '/list/history/weather',
+            url: '/list/history/situation',
             toolbar: '#toolbarDemo',
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
@@ -80,7 +80,7 @@
             }],
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'province', width: 140, title: '渔场所在省份'},
+                {field: 'province', width: 140, title: '省份'},
                 {field: 'fishery_name', width: 140, title: '渔场名称'},
                 {field: 'record_date', width: 140, title: '日期'},
                 {field: 'high_temp', title: '最高水温', width: 100, templet: (d) => (d.high_temp + " ℃")},
@@ -137,7 +137,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '/page/history/weather/add',
+                    content: '/page/history/situation/add',
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -151,7 +151,7 @@
                 })
                 let ids_str = ids.join(',')
                 layer.confirm('真的删除行么', function (index) {
-                    $.post('/del/history/weather?ids=' + ids_str, '', function (res) {
+                    $.post('/del/history/situation?ids=' + ids_str, '', function (res) {
                         layer.close(index);
                         if (res.success) {
                             reload()
@@ -183,7 +183,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '/page/history/weather/edit?id=' + data.id,
+                    content: '/page/history/situation/edit?id=' + data.id,
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -191,7 +191,7 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
-                    $.post('/del/history/weather/' + obj.data.id, '', function (res) {
+                    $.post('/del/history/situation/' + obj.data.id, '', function (res) {
                         layer.close(index);
                         if (res.success) {
                             reload()

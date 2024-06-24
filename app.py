@@ -120,17 +120,17 @@ def login_user():
 # ----------------------------------------------全国渔场相关模块开始----------------------------------------------
 # 全国渔场数据分页
 @app.route('/page/current/situation/add', methods=['get'])
-def page_current_weather_add():
+def page_current_situation_add():
     fishery_list = current_situation_service.get_fishery_list()
     water_list = current_situation_service.get_water_list()
     fish_list = current_situation_service.get_fish_list()
-    return render_template("page/currentSituation/add.html", city_list=fishery_list, weather_list=fish_list,
-                           wd_list=water_list)
+    return render_template("page/currentSituation/add.html", fishery_list=fishery_list, fish_list=fish_list,
+                           water_quality_list=water_list)
 
 
 # 添加全国渔场数据
 @app.route('/add/current/situation', methods=['post'])
-def add_current_weather():
+def add_current_situation():
     form = request.form.to_dict()
     result = current_situation_service.insert_current_situation(form)
     return result.get()
@@ -138,19 +138,19 @@ def add_current_weather():
 
 # 全国渔场数据编辑页面
 @app.route('/page/current/situation/edit', methods=['get'])
-def page_current_weather_edit():
+def page_current_situation_edit():
     id = request.args.get('id')
-    current_weather = current_situation_service.get_current_situation(id)
-    city_list = current_situation_service.get_fishery_list()
-    wd_list = current_situation_service.get_water_list()
-    weather_list = current_situation_service.get_fish_list()
-    return render_template("page/currentSituation/edit.html", city_list=city_list, weather_list=weather_list,
-                           wd_list=wd_list, current_weather=current_weather)
+    current_situation = current_situation_service.get_current_situation(id)
+    fishery_list = current_situation_service.get_fishery_list()
+    water_list = current_situation_service.get_water_list()
+    fish_list = current_situation_service.get_fish_list()
+    return render_template("page/currentSituation/edit.html", fishery_list=fishery_list, fish_list=fish_list,
+                           water_list=water_list, current_situation=current_situation)
 
 
 # 编辑全国气象接口
 @app.route('/edit/current/situation', methods=['post'])
-def edit_current_weather():
+def edit_current_situation():
     form = request.form.to_dict()
     result = current_situation_service.edit_current_situation(form)
     return result.get()
@@ -158,14 +158,14 @@ def edit_current_weather():
 
 # 单个删除全国气象接口
 @app.route('/del/current/situation/<int:id>', methods=['post'])
-def del_current_weather(id):
+def del_current_situation(id):
     result = current_situation_service.del_current_situation(id)
     return result.get()
 
 
 # 批量删除全国气象接口
 @app.route('/del/current/situation', methods=['post'])
-def del_current_weather_list():
+def del_current_situation_list():
     ids = request.args.get('ids')
     result = current_situation_service.del_current_situation_list(ids)
     return result.get()
@@ -173,7 +173,7 @@ def del_current_weather_list():
 
 # 全国气象数据分页
 @app.route('/list/current/situation', methods=['get'])
-def current_weather_list():
+def current_situation_list():
     page = request.args.get('page')
     limit = request.args.get('limit')
     where = request.args.get('searchParams')
@@ -181,64 +181,61 @@ def current_weather_list():
     return result.get()
 
 
-# ----------------------------------------------全国气象相关模块结束----------------------------------------------
+# ----------------------------------------------全国渔场相关模块结束----------------------------------------------
 
-# ----------------------------------------------上海历史气象相关模块开始----------------------------------------------
-# 上海历史数据分页
-@app.route('/page/history/weather/add', methods=['get'])
+# ----------------------------------------------历史气象相关模块开始----------------------------------------------
+# 历史数据分页
+@app.route('/page/history/situation/add', methods=['get'])
 def page_history_weather_add():
-    city_list = special_fishery_service.get_fishery_list()
-    wd_list = special_fishery_service.get_fish_list()
-    weather_list = special_fishery_service.get_fish_list()
-    return render_template("page/historyWeather/add.html", city_list=city_list, weather_list=weather_list,
-                           wd_list=wd_list)
+    fishery_list = special_fishery_service.get_fishery_list()
+    fish_list = special_fishery_service.get_fish_list()
+    return render_template("page/historySituation/add.html", fishery_list=fishery_list, fish_list=fish_list)
 
 
 # 添加渔场历史数据
-@app.route('/add/history/weather', methods=['post'])
+@app.route('/add/history/situation', methods=['post'])
 def add_history_weather():
     form = request.form.to_dict()
     result = special_fishery_service.insert_fishery_history(form)
     return result.get()
 
 
-# 上海历史编辑页面
-@app.route('/page/history/weather/edit', methods=['get'])
+# 历史编辑页面
+@app.route('/page/history/situation/edit', methods=['get'])
 def page_history_weather_edit():
     id = request.args.get('id')
-    history_weather = special_fishery_service.get_fishery_history(id)
-    city_list = special_fishery_service.get_fishery_list()
-    wd_list = special_fishery_service.get_fish_list()
-    weather_list = special_fishery_service.get_fish_list()
-    return render_template("page/historyWeather/edit.html", city_list=city_list, weather_list=weather_list,
-                           wd_list=wd_list, history_weather=history_weather)
+    history_situation = special_fishery_service.get_fishery_history(id)
+    fishery_list = special_fishery_service.get_fishery_list()
+    fish_list = special_fishery_service.get_fish_list()
+    return render_template("page/historySituation/edit.html", fishery_list=fishery_list,
+                           fish_list=fish_list, history_situation=history_situation)
 
 
-# 编辑上海历史接口
-@app.route('/edit/history/weather', methods=['post'])
+# 编辑历史接口
+@app.route('/edit/history/situation', methods=['post'])
 def edit_history_weather():
     form = request.form.to_dict()
     result = special_fishery_service.edit_fishery_history(form)
     return result.get()
 
 
-# 单个删除上海历史接口
-@app.route('/del/history/weather/<int:id>', methods=['post'])
+# 单个删除历史接口
+@app.route('/del/history/situation/<int:id>', methods=['post'])
 def del_history_weather(id):
     result = special_fishery_service.del_fishery_history(id)
     return result.get()
 
 
 # 批量删除上海历史接口
-@app.route('/del/history/weather', methods=['post'])
+@app.route('/del/history/situation', methods=['post'])
 def del_history_weather_list():
     ids = request.args.get('ids')
     result = special_fishery_service.del_fishery_history_list(ids)
     return result.get()
 
 
-# 上海历史气象数据分页
-@app.route('/list/history/weather', methods=['get'])
+# 历史气象数据分页
+@app.route('/list/history/situation', methods=['get'])
 def history_weather_list():
     page = request.args.get('page')
     limit = request.args.get('limit')
@@ -381,6 +378,12 @@ def get_new_notice():
 # ----------------------------------------------公告相关模块结束----------------------------------------------
 
 # ----------------------------------------------日志相关模块开始----------------------------------------------
+@app.route('/add/slog', methods=['post'])
+def add_slog():
+    form = request.form.to_dict()
+    result = slog_service.insert_slog(form)
+    return result.get()
+
 
 # 单个删除日志接口
 @app.route('/del/slog/<int:id>', methods=['post'])
@@ -412,21 +415,21 @@ def slog_list():
 
 # ----------------------------------------------分析相关模块开始----------------------------------------------
 
-# 上海城市数据分析
-@app.route('/data/history/weather', methods=['post', 'get'])
+# 城市数据分析
+@app.route('/data/history/situation', methods=['post', 'get'])
 def data_history_category():
-    city = request.args.get('city')
-    result_weather = data_service.temp_fishery_data(city)
-    result_wd = data_service.ph_fishery_data(city)
-    result_ws = data_service.oxygen_fishery_data(city)
-    result_temp = data_service.turbidity_fishery_data(city)
-    return {"weather_data": result_weather, "wd_data": result_wd, "ws_data": result_ws, "temp_data": result_temp}
+    fishery = request.args.get('fishery_name')
+    result_temp = data_service.temp_fishery_data(fishery)
+    result_ph = data_service.ph_fishery_data(fishery)
+    result_oxygen = data_service.oxygen_fishery_data(fishery)
+    result_turbidity = data_service.turbidity_fishery_data(fishery)
+    return {"temp_data": result_temp, "ph_data": result_ph, "oxygen_data": result_oxygen, "turbidity_data": result_turbidity}
 
 
-# 城市实时数据分析
-@app.route('/data/china/weather', methods=['post', 'get'])
+# 全国城市实时数据分析
+@app.route('/data/china/situation', methods=['post', 'get'])
 def data_china_category():
-    city = request.args.get('city')
+    city = request.args.get('fishery_name')
     model = current_situation_service.select_current_situation_by_fishery(city)
     result_data = data_service.current_change_data(city)
     return {"model": model, "result_data": result_data}

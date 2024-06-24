@@ -63,19 +63,19 @@ def current_change_data(fishery_name):
     data_sql = f"SELECT record_date, record_time,water_temp,water_quality,ph_value,dissolved_oxygen,turbidity FROM currentsituation WHERE fishery_name ='{fishery_name}' ORDER BY record_date DESC LIMIT 15"
     data = sqlManager.get_list(data_sql)
     x_data = [str(k['record_date']) + ' ' + str(k['record_time']) for k in data]
-    y1_data = [k['water_temp'] for k in data]
-    y2_data = [k['water_quality'] for k in data]
-    y3_data = [k['ph_value'] for k in data]
-    y4_data = [k['dissolved_oxygen'] for k in data]
-    y5_data = [k['turbidity'] for k in data]
+    water_temp_data = [k['water_temp'] for k in data]
+    water_quality_data = [k['water_quality'] for k in data]
+    ph_value__data = [k['ph_value'] for k in data]
+    dissolved_oxygen_data = [k['dissolved_oxygen'] for k in data]
+    turbidity_data = [k['turbidity'] for k in data]
     x_data.reverse()
-    y1_data.reverse()
-    y2_data.reverse()
-    y3_data.reverse()
-    y4_data.reverse()
-    y5_data.reverse()
+    water_temp_data.reverse()
+    water_quality_data.reverse()
+    ph_value__data.reverse()
+    dissolved_oxygen_data.reverse()
+    turbidity_data.reverse()
     sqlManager.close()
-    return {'x': x_data, 'water_temp': y1_data, 'water_quality': y2_data,'ph_value': y3_data, 'dissolved_oxygen': y4_data, 'turbidity': y5_data}
+    return {'x': x_data, 'water_temp': water_temp_data, 'water_quality': water_quality_data,'ph_value': ph_value__data, 'dissolved_oxygen': dissolved_oxygen_data, 'turbidity': turbidity_data}
 
 
 # 首页数据

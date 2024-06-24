@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>系统渔场数据列表</title>
+    <title>渔场数据列表</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -28,7 +28,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">渔场名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="cityname" autocomplete="off" class="layui-input">
+                                <input type="text" name="fishery_name" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -80,7 +80,7 @@
             }],
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'province', width: 140, title: '渔场所在省份'},
+                {field: 'province', width: 140, title: '省份'},
                 {field: 'fishery_name', width: 140, title: '渔场名称'},
                 {field: 'record_date', width: 140, title: '日期'},
                 {field: 'record_time', width: 80, title: '时间'},
@@ -139,7 +139,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '/page/history/weather/add',
+                    content: '/page/current/situation/add',
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -152,8 +152,8 @@
                     ids.push(i.id)
                 })
                 let ids_str = ids.join(',')
-                layer.confirm('真的删除行么', function (index) {
-                    $.post('/del/history/weather?ids=' + ids_str, '', function (res) {
+                layer.confirm('确认删除？', function (index) {
+                    $.post('/del/current/situation?ids=' + ids_str, '', function (res) {
                         layer.close(index);
                         if (res.success) {
                             reload()
@@ -185,7 +185,7 @@
                     maxmin: true,
                     shadeClose: true,
                     area: ['100%', '100%'],
-                    content: '/page/history/weather/edit?id=' + data.id,
+                    content: '/page/current/situation/edit?id=' + data.id,
                 });
                 $(window).on("resize", function () {
                     layer.full(index);
@@ -193,7 +193,7 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
-                    $.post('/del/history/weather/' + obj.data.id, '', function (res) {
+                    $.post('/del/current/situation/' + obj.data.id, '', function (res) {
                         layer.close(index);
                         if (res.success) {
                             reload()

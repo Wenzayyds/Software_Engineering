@@ -97,7 +97,7 @@ def insert_current_situation(data):
     if count > 0:
         return Result(False, "数据重复")
     sql = "INSERT INTO CurrentSituation (province, fishery_name, record_date, record_time, water_temp, water_quality, ph_value, dissolved_oxygen, turbidity, fish_name, fish_count) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    sqlManager.instert(sql, (
+    sqlManager.insert(sql, (
         data['province'], data['fishery_name'], data['record_date'], data['record_time'], data['water_temp'], data['water_quality'], data['ph_value'], data['dissolved_oxygen'], data['turbidity'], data['fish_name'], data['fish_count']))
     sqlManager.close()
     return Result(True, "添加成功")

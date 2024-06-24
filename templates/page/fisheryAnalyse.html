@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>城市气象分析</title>
+    <title>渔场数据分析</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -46,14 +46,14 @@
                         <label class="layui-form-label">省份</label>
                         <div class="layui-input-inline">
                             <select name="province" lay-verify="required" lay-filter="province" id="province">
-                                <option value="上海">上海</option>
+                                <option value="天津">天津</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">城市</label>
+                        <label class="layui-form-label">渔场名称</label>
                         <div class="layui-input-inline">
-                            <select name="cityname" lay-verify="required" id="cityname">
+                            <select name="fishery_name" lay-verify="required" id="fishery_name">
                                 <option value="">上海</option>
                             </select>
                         </div>
@@ -81,24 +81,24 @@
                     </colgroup>
                     <tbody>
                     <tr>
-                        <td>地区</td>
-                        <td id="area">上海上海</td>
+                        <td>渔场</td>
+                        <td id="area">天津西屯桥渔场</td>
                     </tr>
                     <tr>
                         <td>时间</td>
                         <td id="record_date">2023/2/4 12：10</td>
                     </tr>
                     <tr>
-                        <td>天气</td>
-                        <td id="weather">晴天</td>
+                        <td>水质</td>
+                        <td id="water_quality">I</td>
                     </tr>
                     <tr>
-                        <td>温度</td>
-                        <td id="temp">10℃</td>
+                        <td>水温</td>
+                        <td id="water_temp">10℃</td>
                     </tr>
                     <tr>
-                        <td>AQI</td>
-                        <td id="aqi">40</td>
+                        <td>浊度</td>
+                        <td id="turbidity">40</td>
                     </tr>
                     </tbody>
                 </table>
@@ -108,7 +108,7 @@
             <div id="temp-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
         </div>
         <div class="layui-col-xs12 layui-col-md4">
-            <div id="rain-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
+            <div id="oxygen-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
         </div>
     </div>
     <div class="layui-row layui-col-space15">
@@ -123,25 +123,20 @@
                     <tbody>
 
                     <tr>
-                        <td>风向</td>
-                        <td id="wd">东南</td>
+                        <td>PH值</td>
+                        <td id="ph_value">7.69</td>
                     </tr>
                     <tr>
-                        <td>风力</td>
-                        <td id="ws">2级</td>
+                        <td>溶氧量</td>
+                        <td id="dissolved_oxygen">9.66</td>
                     </tr>
                     <tr>
-                        <td>风速</td>
-                        <td id="wse">1Km/h</td>
+                        <td>水产数量</td>
+                        <td id="fish_count">1Km/h</td>
                     </tr>
                     <tr>
-                        <td>湿度</td>
-                        <td id="sd">40%</td>
-                    </tr>
-
-                    <tr>
-                        <td>降雨量</td>
-                        <td id="rain">0mm</td>
+                        <td>水产名称</td>
+                        <td id="fish_name">Bream</td>
                     </tr>
 
                     </tbody>
@@ -149,15 +144,18 @@
             </div>
         </div>
         <div class="layui-col-xs12 layui-col-md4">
-            <div id="wse-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
+            <div id="ph-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
         </div>
         <div class="layui-col-xs12 layui-col-md4">
-            <div id="aqi-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
+            <div id="turbidity-records" style="background-color:#ffffff;min-height:240px;padding: 10px"></div>
         </div>
 
     </div>
 
 </div>
+<div class="map-container">
+        <iframe src="fishmap.html" width="100%" height="600px" style="border: none;"></iframe>
+    </div>
 <!--</div>-->
 <script src="../../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script src="../../static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
@@ -170,7 +168,7 @@
 
         function load_province() {
             //渲染省份
-            let province = ['北京', '上海', '天津', '重庆', '黑龙江', '吉林', '辽宁', '内蒙古', '河北', '山西', '陕西', '山东', '新疆', '西藏', '青海', '甘肃', '宁夏', '河南', '江苏', '湖北', '浙江', '安徽', '福建', '江西', '湖南', '贵州', '四川', '广东', '云南', '广西', '香港', '澳门', '台湾']
+            let province = ['天津市', '北京市', '河北省', '山西省', '内蒙古', '辽宁省', '吉林省', '黑龙江', '上海市', '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省', '河南省','海南省','四川省','广东省','湖南省','湖北省']
             let html_text = ""
             province.forEach(i => {
                 html_text += "<option value='" + i + "'>" + i + "</option>"
@@ -181,46 +179,34 @@
         window.onChange = function (v) {
             v = v || $('#province').val() || '上海'
             let city_list = {
-                "北京": ["北京", "海淀", "朝阳", "顺义", "怀柔", "通州", "昌平", "延庆", "丰台", "石景山", "大兴", "房山", "密云", "门头沟", "平谷"],
-                "上海": ["上海", "闵行", "宝山", "嘉定", "南汇", "金山", "青浦", "松江", "奉贤", "崇明", "徐家汇", "浦东"],
-                "天津": ["天津", "武清", "宝坻", "东丽", "西青", "北辰", "宁河", "汉沽", "静海", "津南", "塘沽", "大港", "蓟县"],
-                "重庆": ["重庆", "永川", "合川", "南川", "江津", "万盛", "渝北", "北碚", "巴南", "长寿", "黔江", "万州", "涪陵", "开县", "城口", "云阳", "巫溪", "奉节", "巫山", "潼南", "垫江", "梁平", "忠县", "石柱", "大足", "荣昌", "铜梁", "璧山", "丰都", "武隆", "彭水", "綦江", "酉阳", "秀山"],
-                "黑龙江": ["哈尔滨", "齐齐哈尔", "牡丹江", "佳木斯", "绥化", "黑河", "大兴安岭", "伊春", "大庆", "七台河", "鸡西", "鹤岗", "双鸭山"],
-                "吉林": ["长春", "吉林", "延边", "四平", "通化", "白城", "辽源", "松原", "白山"],
-                "辽宁": ["沈阳", "大连", "鞍山", "抚顺", "本溪", "丹东", "锦州", "营口", "阜新", "辽阳", "铁岭", "盘锦", "葫芦岛"],
-                "内蒙古": ["呼和浩特", "包头", "乌海", "乌兰察布", "通辽", "赤峰", "鄂尔多斯", "巴彦淖尔", "锡林郭勒", "呼伦贝尔", "兴安盟", "阿拉善盟"],
-                "河北": ["石家庄", "保定", "张家口", "承德", "唐山", "廊坊", "沧州", "衡水", "邢台", "邯郸", "秦皇岛"],
-                "山西": ["太原", "大同", "阳泉", "晋中", "长治", "晋城", "临汾", "运城", "朔州", "忻州", "吕梁"],
-                "陕西": ["西安", "咸阳", "延安", "榆林", "渭南", "商洛", "安康", "汉中", "宝鸡", "铜川", "杨凌"],
-                "山东": ["济南", "青岛", "淄博", "德州", "烟台", "潍坊", "济宁", "泰安", "临沂", "菏泽", "滨州", "东营", "威海", "枣庄", "日照", "莱芜", "聊城"],
-                "新疆": ["乌鲁木齐", "克拉玛依", "石河子", "昌吉", "吐鲁番", "巴州", "阿拉尔", "阿克苏", "喀什", "伊犁", "塔城", "哈密", "和田", "阿勒泰", "克州", "博州"],
-                "西藏": ["拉萨", "日喀则", "山南", "林芝", "昌都", "那曲", "阿里"],
-                "青海": ["西宁", "海东", "黄南", "海南", "果洛", "玉树", "海西", "海北", "格尔木"],
-                "甘肃": ["兰州", "定西", "平凉", "庆阳", "武威", "金昌", "张掖", "酒泉", "天水", "陇南", "临夏", "甘南", "白银", "嘉峪关"],
-                "宁夏": ["银川", "石嘴山", "吴忠", "固原", "中卫"],
-                "河南": ["郑州", "安阳", "新乡", "许昌", "平顶山", "信阳", "南阳", "开封", "洛阳", "商丘", "焦作", "鹤壁", "濮阳", "周口", "漯河", "驻马店", "三门峡", "济源"],
-                "江苏": ["南京", "无锡", "镇江", "苏州", "南通", "扬州", "盐城", "徐州", "淮安", "连云港", "常州", "泰州", "宿迁"],
-                "湖北": ["武汉", "襄阳", "鄂州", "孝感", "黄冈", "黄石", "咸宁", "荆州", "宜昌", "恩施", "十堰", "神农架", "随州", "荆门", "天门", "仙桃", "潜江"],
-                "浙江": ["杭州", "湖州", "嘉兴", "宁波", "绍兴", "台州", "温州", "丽水", "金华", "衢州", "舟山"],
-                "安徽": ["合肥", "蚌埠", "芜湖", "淮南", "马鞍山", "安庆", "宿州", "阜阳", "亳州", "黄山", "滁州", "淮北", "铜陵", "宣城", "六安", "巢湖", "池州"],
-                "福建": ["福州", "厦门", "宁德", "莆田", "泉州", "漳州", "龙岩", "三明", "南平"],
-                "江西": ["南昌", "九江", "上饶", "抚州", "宜春", "吉安", "赣州", "景德镇", "萍乡", "新余", "鹰潭"],
-                "湖南": ["长沙", "湘潭", "株洲", "衡阳", "郴州", "常德", "益阳", "娄底", "邵阳", "岳阳", "张家界", "怀化", "永州", "湘西"],
-                "贵州": ["贵阳", "遵义", "安顺", "黔南", "黔东南", "铜仁", "毕节", "六盘水", "黔西南"],
-                "四川": ["成都", "攀枝花", "自贡", "绵阳", "南充", "达州", "遂宁", "广安", "巴中", "泸州", "宜宾", "内江", "资阳", "乐山", "眉山", "凉山", "雅安", "甘孜", "阿坝", "德阳", "广元"],
-                "广东": ["广州", "韶关", "惠州", "梅州", "汕头", "深圳", "珠海", "佛山", "肇庆", "湛江", "江门", "河源", "清远", "云浮", "潮州", "东莞", "中山", "阳江", "揭阳", "茂名", "汕尾"],
-                "云南": ["昆明", "大理", "红河", "曲靖", "保山", "文山", "玉溪", "楚雄", "普洱", "昭通", "临沧", "怒江", "迪庆", "丽江", "德宏", "西双版纳"],
-                "广西": ["南宁", "崇左", "柳州", "来宾", "桂林", "梧州", "贺州", "贵港", "玉林", "百色", "钦州", "河池", "北海", "防城港"],
-                "香港": ["香港"],
-                "澳门": ["澳门"],
-                "台湾": ["台北", "高雄", "台中"]
+                "天津市": ["西屯桥渔场", "井冈山桥渔场", "土门楼渔场", "万家码头渔场", "果河桥渔场", "海河渔场", "黄白桥渔场", "三岔口渔场", "于桥渔场"],
+                "北京市": ["怀柔渔场","罗庄渔场","白石桥渔场","大关桥渔场"],
+                "河北省": ["戴河口渔场"],
+                "山西省": ["汾河渔场"],
+                "内蒙古": ["新发渔场"],
+                "辽宁省": ["爱河渔场", "石井渔场", "延吉渔场"],
+                "吉林省": ["白沙滩渔场"],
+                "黑龙江": ["松花江渔场"],
+                "上海市": ["临江渔场", "前桥渔场"],
+                "江苏省": ["五里湖渔场", "陈东港渔场", "大港桥渔场", "大港桥渔场"],
+                "浙江省": ["太湖渔场"],
+                "安徽省": ["巢湖渔场"],
+                "福建省": ["圆头桥渔场"],
+                "江西省": ["兴宁渔场"],
+                "山东省": ["张秋渔场"],
+                "河南省": ["洛河渔场"],
+                "海南省": ["百仞滩渔场"],
+                "四川省": ["三川渔场"],
+                "广东省": ["白沙街渔场","步洲渔场","大泉渔场","凤江渔场","平洲渔场","永安渔场"],
+                "湖南省": ["八仙桥渔场"],
+                "湖北省": ["白家湾渔场"],
             }
             let list = city_list[v]
             let html_text = ""
             list.forEach(i => {
                 html_text += "<option value='" + i + "'>" + i + "</option>"
             })
-            $("#cityname").html(html_text)
+            $("#fishery_name").html(html_text)
             form.render()
         }
         load_province()
@@ -232,20 +218,18 @@
         })
 
         function data_history() {
-            let city = $("#cityname").val() || "上海"
-            $.post('/data/china/weather?city=' + city, '', function (res) {
+            let city = $("#fishery_name").val() || "天津"
+            $.post('/data/china/situation?fishery_name=' + city, '', function (res) {
                 let model = res.model;
                 let result_data = res.result_data;
-                $("#area").html(model.province + model.cityname);
+                $("#area").html(model.province + model.fishery_name);
                 $("#record_date").html(model.record_date + model.record_time);
-                $("#weather").html(model.weather);
-                $("#temp").html(model.temp + "℃");
-                $("#sd").html(model.sd + "%");
-                $("#ws").html(model.ws + "级");
-                $("#wd").html(model.wd);
-                $("#wse").html(model.wse + "Km/h");
-                $("#rain").html(model.rain + "mm");
-                $("#aqi").html(model.aqi);
+                $("#water_quality").html(model.water_quality);
+                $("#water_temp").html(model.water_temp + "℃");
+                $("#fish_name").html(model.fish_name);
+                $("#dissolved_oxygen").html(model.dissolved_oxygen);
+                $("#ph_value").html(model.ph_value);
+                $("#fish_count").html(model.fish_count);
                 /**
                  * 报表功能
                  */
@@ -300,20 +284,20 @@
                             type: 'line',
                             stack: '温度',
                             areaStyle: {},
-                            data: result_data.temp_data
+                            data: result_data.water_temp
                         }
                     ]
                 };
                 tempRecords.setOption(optionRecords);
 
                 /**
-                 * 降雨量变化
+                 * 溶解氧含量
                  */
-                var rainRecords = echarts.init(document.getElementById('rain-records'), 'walden');
+                var oxygenRecords = echarts.init(document.getElementById('oxygen-records'), 'walden');
 
                 var optionRecords = {
                     title: {
-                        text: '降雨量变化分析'
+                        text: '溶解氧变化分析'
                     },
                     tooltip: {
                         trigger: 'axis',
@@ -323,10 +307,10 @@
                                 backgroundColor: '#6a7985'
                             }
                         },
-                        formatter: '{b} <br/>{a} : {c} mm'
+                        formatter: '{b} <br/>{a} : {c} '
                     },
                     legend: {
-                        data: ['降雨量']
+                        data: ['溶解氧']
                     },
                     toolbox: {
                         feature: {
@@ -350,29 +334,29 @@
                         {
                             type: 'value',
                             axisLabel: {
-                                formatter: '{value} mm'
+                                formatter: '{value} '
                             }
                         }
                     ],
                     series: [
                         {
-                            name: '降雨量',
+                            name: '溶解氧',
                             type: 'line',
-                            stack: '降雨量',
+                            stack: '溶解氧',
                             areaStyle: {},
-                            data: result_data.rain_data
+                            data: result_data.dissolved_oxygen
                         }
                     ]
                 };
-                rainRecords.setOption(optionRecords);
+                oxygenRecords.setOption(optionRecords);
 
                 /**
-                 * 风速变化
+                 * PH值变化
                  */
-                var wseRecords = echarts.init(document.getElementById('wse-records'), 'walden');
+                var phRecords = echarts.init(document.getElementById('ph-records'), 'walden');
                 var optionRecords = {
                     title: {
-                        text: '风速变化分析'
+                        text: 'PH值变化分析'
                     },
                     tooltip: {
                         trigger: 'axis',
@@ -382,10 +366,10 @@
                                 backgroundColor: '#6a7985'
                             }
                         },
-                        formatter: '{b} <br/>{a} : {c} Km/h'
+                        formatter: '{b} <br/>{a} : {c} '
                     },
                     legend: {
-                        data: ['风速']
+                        data: ['PH值']
                     },
                     toolbox: {
                         feature: {
@@ -409,29 +393,29 @@
                         {
                             type: 'value',
                             axisLabel: {
-                                formatter: '{value} Km/h'
+                                formatter: '{value}'
                             }
                         }
                     ],
                     series: [
                         {
-                            name: '风速',
+                            name: 'PH值',
                             type: 'line',
-                            stack: '风速',
+                            stack: 'PH值',
                             areaStyle: {},
-                            data: result_data.wse_data
+                            data: result_data.ph_value
                         }
                     ]
                 };
-                wseRecords.setOption(optionRecords);
+                phRecords.setOption(optionRecords);
 
                 /**
-                 * AQI变化
+                 * 浊度变化
                  */
-                var aqiRecords = echarts.init(document.getElementById('aqi-records'), 'walden');
+                var turbidityRecords = echarts.init(document.getElementById('turbidity-records'), 'walden');
                 var optionRecords = {
                     title: {
-                        text: 'AQI变化分析'
+                        text: '浊度变化分析'
                     },
                     tooltip: {
                         trigger: 'axis',
@@ -471,23 +455,23 @@
                     ],
                     series: [
                         {
-                            name: 'AQI',
+                            name: '浊度',
                             type: 'line',
-                            stack: 'AQI',
+                            stack: '浊度',
                             areaStyle: {},
-                            data: result_data.aqi_data
+                            data: result_data.turbidity
                         }
                     ]
                 };
-                aqiRecords.setOption(optionRecords);
+                turbidityRecords.setOption(optionRecords);
 
 
                 // echarts 窗口缩放自适应
                 window.onresize = function () {
                     tempRecords.resize();
-                    rainRecords.resize();
-                    wseRecords.resize();
-                    aqiRecords.resize();
+                    oxygenRecords.resize();
+                    phRecords.resize();
+                    turbidityRecords.resize();
                 }
             })
         }

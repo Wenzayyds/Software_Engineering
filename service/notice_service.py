@@ -37,7 +37,7 @@ def select_notice_list(page, limit, where):
 def insert_notice(data):
     sqlManager = SQLManager()
     sql = "INSERT INTO notice (title,content,user_name) VALUES (%s,%s,%s)"
-    sqlManager.instert(sql, (data['title'], data['content'], data['user_name']))
+    sqlManager.insert(sql, (data['title'], data['content'], data['user_name']))
     sqlManager.close()
     return Result(True, "添加成功")
 

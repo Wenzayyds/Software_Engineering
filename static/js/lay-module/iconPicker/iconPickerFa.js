@@ -225,7 +225,7 @@ layui.define(['laypage', 'form'], function (exports) {
                     $('#' + PICKER_BODY).addClass('layui-iconpicker-body-page');
                     pageHtml = '<div class="layui-iconpicker-page" id="' + PAGE_ID + '">' +
                         '<div class="layui-iconpicker-page-count">' +
-                        '<span id="' + PAGE_ID + '-currentWeather">1</span>/' +
+                        '<span id="' + PAGE_ID + '-currentSituation">1</span>/' +
                         '<span id="' + PAGE_ID + '-pages">' + _pages + '</span>' +
                         ' (<span id="' + PAGE_ID + '-length">' + l + '</span>)' +
                         '</div>' +
@@ -259,7 +259,7 @@ layui.define(['laypage', 'form'], function (exports) {
                         isPrev = $(elem).attr('prev') !== undefined,
                         // 按钮上标的页码
                         index = parseInt($(elem).attr('data-index')),
-                        $cur = $('#' + PAGE_ID + '-currentWeather'),
+                        $cur = $('#' + PAGE_ID + '-currentSituation'),
                         // 点击时正在显示的页码
                         current = parseInt($cur.html());
 

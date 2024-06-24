@@ -37,7 +37,7 @@
           "child": [
             {
               "title": "城市数据分析",
-              "href": "page/cityAnalyse.html",
+              "href": "page/fisheryAnalyse.html",
               "icon": "fa fa-line-chart",
               "target": "_self"
             },

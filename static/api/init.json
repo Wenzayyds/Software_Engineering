@@ -57,13 +57,13 @@
           "child": [
             {
               "title": "系统渔场数据",
-              "href": "page/currentWeather.html",
+              "href": "page/currentSituation.html",
               "icon": "fa fa-globe",
               "target": "_self"
             },
             {
-              "title": "渔场历史数据",
-              "href": "page/historyWeather.html",
+              "title": "天津渔场数据",
+              "href": "page/historySituation.html",
               "icon": "fa fa-cubes",
               "target": "_self"
             },
@@ -83,7 +83,7 @@
           "child": [
             {
               "title": "渔场数据分析",
-              "href": "page/cityAnalyse.html",
+              "href": "page/fisheryAnalyse.html",
               "icon": "fa fa-line-chart",
               "target": "_self"
             },

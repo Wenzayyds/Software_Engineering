@@ -4,7 +4,7 @@ DB_CONFIG = {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "root",
-    "passwd": "Liuchuanfeng0306",
+    "passwd": "243487149jl",
     "db": "fish",
     "charset": "utf8"
 }
@@ -49,7 +49,7 @@ class SQLManager(object):
         self.conn.commit()
 
     # 执行返回ID的插入SQL
-    def instert(self, sql, args=None):
+    def insert(self, sql, args=None):
         self.cursor.execute(sql, args)
         id = self.conn.insert_id()
         self.conn.commit()

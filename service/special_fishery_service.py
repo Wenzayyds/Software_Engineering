@@ -76,8 +76,8 @@ def insert_fishery_history(data):
     if count > 0:
         return Result(False, "数据重复")
     sql = "INSERT INTO specialfishery (province,fishery_name, record_date, high_temp, low_temp, ph_value, dissolved_oxygen, turbidity, fish_name) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    sqlManager.instert(sql, (
-        data['province'],data['fishery_name'], data['record_date'], data['high_temp'], data['low_temp'], data['ph_value'], data['dissolved_oxygen'], data['turbidity'], data['fish_name']))
+    sqlManager.insert(sql, (
+        "天津市",data['fishery_name'], data['record_date'], data['high_temp'], data['low_temp'], data['ph_value'], data['dissolved_oxygen'], data['turbidity'], data['fish_name']))
     sqlManager.close()
     return Result(True, "添加成功")
 

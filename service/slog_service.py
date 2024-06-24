@@ -4,6 +4,7 @@ from utils.PageUtils import get_page_start, PageData
 from utils.Result import Result
 from utils.SySQL import SQLManager
 import logging
+from datetime import datetime
 """
 日志数据相关业务逻辑服务层
 """
@@ -44,6 +45,21 @@ def select_slog_list(page, limit, where):
     page_result = PageData(count, slog)
     return page_result
 
+
+def insert_slog(data):
+    # 获取当前时间并格式化
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    sqlManager = SQLManager()
+
+    # 修改SQL语句，添加时间字段
+    sql = "INSERT INTO slog (log, create_time) VALUES (%s, %s)"
+
+    # 执行插入操作时，传入log数据和时间
+    sqlManager.insert(sql, (data['log'], current_time))
+
+    sqlManager.close()
+    return Result(True, "添加成功")
 
 
 # 删除数据

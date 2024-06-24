@@ -50,7 +50,7 @@ def insert_user(data):
     if count > 0:
         return Result(False, "账号或邮箱重复")
     sql = "INSERT INTO user (name,account,password,phone,mail,type,status) VALUES (%s,%s,%s,%s,%s,1,1)"
-    sqlManager.instert(sql, (data['name'], data['account'], data['password'], data['phone'], data['mail']))
+    sqlManager.insert(sql, (data['name'], data['account'], data['password'], data['phone'], data['mail']))
     sqlManager.close()
     return Result(True, "注册成功")
 
