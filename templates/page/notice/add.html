@@ -68,10 +68,6 @@
                     parent.layer.close(iframeIndex);
                     parent.reload();
                     parent.layer.msg(response.msg, {icon: 6});
-                    var formData = {
-                        'log': data.user_name+'发布公告',
-                    };
-                    $.post('/add/slog', formData, function (response) {});
                 } else {
                     parent.layer.msg(response.msg, {icon: 5});
                 }

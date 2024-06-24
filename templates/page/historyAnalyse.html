@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>历史渔场数据分析</title>
+    <title>历史气象数据分析</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -43,12 +43,21 @@
             <form class="layui-form layui-form-pane" action="">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-label">渔场</label>
+                        <label class="layui-form-label">城市</label>
                         <div class="layui-input-inline">
-                            <select name="fishery_name" lay-verify="required" id="fishery_name">
-                                <option value="西屯桥渔场">西屯桥渔场</option>
-                                <option value="北洋桥渔场">北洋桥渔场</option>
-                                <option value="井冈山桥渔场">井冈山桥渔场</option>
+                            <select name="cityname" lay-verify="required" id="cityname">
+                                <option value="上海">上海</option>
+                                <option value="闵行">闵行</option>
+                                <option value="宝山">宝山</option>
+                                <option value="嘉定">嘉定</option>
+                                <option value="南汇">南汇</option>
+                                <option value="金山">金山</option>
+                                <option value="青浦">青浦</option>
+                                <option value="松江">松江</option>
+                                <option value="奉贤">奉贤</option>
+                                <option value="崇明">崇明</option>
+                                <option value="徐家汇">徐家汇</option>
+                                <option value="浦东">浦东</option>
                             </select>
                         </div>
                     </div>
@@ -65,7 +74,7 @@
 
     <div class="layui-row layui-col-space15">
         <div class="layui-col-xs12 layui-col-md4">
-            <div id="turbidity-pies" style="background-color:#ffffff;min-height:400px;padding: 10px">
+            <div id="weather-pies" style="background-color:#ffffff;min-height:400px;padding: 10px">
             </div>
         </div>
         <div class="layui-col-xs12 layui-col-md8">
@@ -75,11 +84,11 @@
 
     <div class="layui-row layui-col-space15">
         <div class="layui-col-xs12 layui-col-md6">
-            <div id="ph-pies" style="background-color:#ffffff;min-height:400px;padding: 10px">
+            <div id="wd-pies" style="background-color:#ffffff;min-height:400px;padding: 10px">
             </div>
         </div>
         <div class="layui-col-xs12 layui-col-md6">
-            <div id="oxygen-pies" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+            <div id="ws-pies" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
         </div>
     </div>
 
@@ -93,72 +102,21 @@
             layer = layui.layer,
             form = layui.form,
             echarts = layui.echarts;
-        data_history();
+        data_history()
 
-        function data_history(result = '北洋桥渔场') {
-            $.get('/data/history/situation?fishery_name=' + result, '', function (res) {
-                let turbidity_data = res.turbidity_data.turbidity_data;
-                let ph_data = res.ph_data.ph_value_data;
-                let oxygen_data = res.oxygen_data.dissolved_oxygen_data;
+        function data_history(result = '上海') {
+            $.get('/data/history/weather?city=' + result, '', function (res) {
+                let weahter_data = res.weather_data;
+                let ws_data = res.ws_data;
+                let wd_data = res.wd_data;
                 let temp_data = res.temp_data;
-
-                function categorizeData(data, ranges) {
-                    let categorized = {};
-                    ranges.forEach(range => {
-                        categorized[range.name] = 0;
-                    });
-
-                    data.forEach(value => {
-                        for (let i = 0; i < ranges.length; i++) {
-                            if (ranges[i].check(value)) {
-                                categorized[ranges[i].name]++;
-                                break;
-                            }
-                        }
-                    });
-
-                    return categorized;
-                }
-
-                let turbidity_ranges = [
-                    { name: '4', check: (v) => v == 4 },
-                    { name: '5', check: (v) => v == 5 },
-                    { name: '6', check: (v) => v == 6 },
-                    { name: '7', check: (v) => v == 7 },
-                    { name: '8', check: (v) => v == 8 },
-                    { name: '9', check: (v) => v == 9 },
-                    { name: '10', check: (v) => v == 10 },
-                    { name: '11', check: (v) => v == 11 },
-                    { name: '12', check: (v) => v == 12 },
-                ];
-
-                let ph_ranges = [
-                    { name: '<7.5', check: (v) => v < 7.5 },
-                    { name: '7.5-7.8', check: (v) => v >= 7.5 && v < 7.8 },
-                    { name: '7.8-8.1', check: (v) => v >= 7.8 && v < 8.1 },
-                    { name: '8.1-8.4', check: (v) => v >= 8.1 && v < 8.4 },
-                    { name: '8.4-8.7', check: (v) => v >= 8.4 && v < 8.7 },
-                    { name: '>8.7', check: (v) => v >= 8.7 }
-                ];
-
-                let oxygen_ranges = [
-                    { name: '<8', check: (v) => v < 8 },
-                    { name: '8-12', check: (v) => v >= 8 && v < 12},
-                    { name: '12-16', check: (v) => v >= 12 && v < 16 },
-                    { name: '>16', check: (v) => v >= 16 }
-                ];
-
-                let categorizedTurbidityData = categorizeData(turbidity_data, turbidity_ranges);
-                let categorizedPhData = categorizeData(ph_data, ph_ranges);
-                let categorizedOxygenData = categorizeData(oxygen_data, oxygen_ranges);
-
                 /**
-                 * 浊度范围分布
+                 * 气象分类
                  */
-                var turbidityPies = echarts.init(document.getElementById('turbidity-pies'), 'walden');
-                var optionTurbidityPies = {
+                var weatherPies = echarts.init(document.getElementById('weather-pies'), 'walden');
+                var optionPies = {
                     title: {
-                        text: '历史浊度分布',
+                        text: '历史天气分布',
                         left: 'center'
                     },
                     tooltip: {
@@ -168,16 +126,16 @@
                     legend: {
                         orient: 'vertical',
                         left: 'left',
-                        data: Object.keys(categorizedTurbidityData),
+                        data: weahter_data.x,
                     },
                     series: [
                         {
-                            name: '历史浊度',
+                            name: '历史天气',
                             type: 'pie',
                             radius: '55%',
                             center: ['50%', '60%'],
                             roseType: 'radius',
-                            data: Object.keys(categorizedTurbidityData).map(key => ({ value: categorizedTurbidityData[key], name: key })),
+                            data: weahter_data.y,
                             emphasis: {
                                 itemStyle: {
                                     shadowBlur: 10,
@@ -188,15 +146,15 @@
                         }
                     ]
                 };
-                turbidityPies.setOption(optionTurbidityPies);
+                weatherPies.setOption(optionPies);
 
                 /**
-                 * PH范围分布
+                 * 玫瑰图表
                  */
-                var phPies = echarts.init(document.getElementById('ph-pies'), 'walden');
-                var optionPhPies = {
+                var wsPies = echarts.init(document.getElementById('ws-pies'), 'walden');
+                var optionPies = {
                     title: {
-                        text: '历史PH值分布',
+                        text: '历史风向分布',
                         left: 'center'
                     },
                     tooltip: {
@@ -206,16 +164,16 @@
                     legend: {
                         orient: 'vertical',
                         left: 'left',
-                        data: Object.keys(categorizedPhData),
+                        data: wd_data.x,
                     },
                     series: [
                         {
-                            name: '历史PH值',
+                            name: '历史风向',
                             type: 'pie',
                             radius: '55%',
                             center: ['50%', '60%'],
                             roseType: 'radius',
-                            data: Object.keys(categorizedPhData).map(key => ({ value: categorizedPhData[key], name: key })),
+                            data: wd_data.y,
                             emphasis: {
                                 itemStyle: {
                                     shadowBlur: 10,
@@ -226,15 +184,14 @@
                         }
                     ]
                 };
-                phPies.setOption(optionPhPies);
-
+                wsPies.setOption(optionPies);
                 /**
-                 * 溶解氧范围分布
+                 * 风向分布
                  */
-                var oxygenPies = echarts.init(document.getElementById('oxygen-pies'), 'walden');
-                var optionOxygenPies = {
+                var wdPies = echarts.init(document.getElementById('wd-pies'), 'walden');
+                var optionPies = {
                     title: {
-                        text: '历史溶解氧分布',
+                        text: '历史风力分布',
                         left: 'center'
                     },
                     tooltip: {
@@ -244,16 +201,16 @@
                     legend: {
                         orient: 'vertical',
                         left: 'left',
-                        data: Object.keys(categorizedOxygenData),
+                        data: ws_data.x,
                     },
                     series: [
                         {
-                            name: '历史溶解氧',
+                            name: '历史风力',
                             type: 'pie',
                             radius: '55%',
                             center: ['50%', '60%'],
                             roseType: 'radius',
-                            data: Object.keys(categorizedOxygenData).map(key => ({ value: categorizedOxygenData[key], name: key })),
+                            data: ws_data.y,
                             emphasis: {
                                 itemStyle: {
                                     shadowBlur: 10,
@@ -264,23 +221,26 @@
                         }
                     ]
                 };
-                oxygenPies.setOption(optionOxygenPies);
+                wdPies.setOption(optionPies);
+
 
                 /**
                  * 温度变化
                  */
                 var tempRecords = echarts.init(document.getElementById('temp-records'), 'walden');
-                var optionTempRecords = {
+
+                var optionRecords = {
                     title: {
                         text: '温度变化分析'
                     },
                     tooltip: {
                         trigger: 'axis',
                         formatter(params) {
-                            console.log("aaa", params);
+                            console.log("aaa", params)
                             var relVal = params[0].name;
                             for (var i = 0, l = params.length; i < l; i++) {
-                                relVal += '<br/>' + params[i].marker + params[i].seriesName + ' : ' + params[i].value + '℃';
+                                //遍历出来的值一般是字符串，需要转换成数字，再进项tiFixed四舍五入
+                                relVal += '<br/>' + params[i].marker + params[i].seriesName + ' : ' + params[i].value + '℃'
                             }
                             return relVal;
                         },
@@ -326,38 +286,36 @@
                             type: 'line',
                             stack: '最高温度',
                             areaStyle: {},
-                            data: temp_data.high_temp_data
+                            data: temp_data.y1
                         },
                         {
                             name: '最低温度',
                             type: 'line',
                             stack: '最低温度',
                             areaStyle: {},
-                            data: temp_data.low_temp_data
+                            data: temp_data.y2
                         }
                     ]
                 };
-                tempRecords.setOption(optionTempRecords);
+                tempRecords.setOption(optionRecords);
 
                 // echarts 窗口缩放自适应
                 window.onresize = function () {
                     tempRecords.resize();
-                    phPies.resize();
-                    oxygenPies.resize();
-                    turbidityPies.resize();
-                };
+                    wsPies.resize();
+                    wdPies.resize();
+                    weatherPies.resize();
+
+                }
             });
         }
 
         // 监听搜索操作
         window.changeCity = function () {
-            data_history($('#fishery_name').val());
-        };
+            data_history($('#cityname').val())
+        }
 
     });
 </script>
-
-
-
 </body>
 </html>
